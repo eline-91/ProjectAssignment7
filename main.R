@@ -33,3 +33,12 @@ greenest_city_August <- avg_NDVI$NAME_2[which.max(avg_NDVI$August)]
 months <- as.data.frame(avg_NDVI[,16:27])
 avg_NDVI <- transform(avg_NDVI, Average_Year = rowMeans(months, na.rm = TRUE))
 greenest_city_Year <- avg_NDVI$NAME_2[which.max(avg_NDVI$Average_Year)]
+
+# Plot 
+nlMunicipalityProject@data <- nlMunicipalityProject@data[!is.na(nlMunicipalityProject$NAME_2),] ## remove rows with NA
+munContour <- nlMunicipalityProject[nlMunicipalityProject$NAME_2 == greenest_city_January,]
+munModis <- mask(modis_files$January, munContour)
+plot(munContour, main = greenest_city_January)
+plot(munModis, add = T)
+plot(munContour, add = T) 
+
