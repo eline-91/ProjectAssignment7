@@ -20,4 +20,16 @@ nlMunicipality <- raster::getData('GADM',country='NLD', level=2, path = inputFol
 # Reproject the nlMunicipality boundaries to the same projection as Modis
 nlMunicipalityProject <- spTransform(nlMunicipality, CRS(proj4string(modis_files)))
 
+# Extract the average NDVI per municipality
+avg_NDVI <- extract(modis_files, nlMunicipalityProject, fun = mean, df = TRUE, full.names = TRUE, sp = TRUE)
 
+# Greenest city in Januari: Littenseradiel
+greenest_city_January <- avg_NDVI$NAME_2[which.max(avg_NDVI$January)]
+
+# Greenest city in August: Vorden
+greenest_city_August <- avg_NDVI$NAME_2[which.max(avg_NDVI$August)]
+
+# Greenest city in the whole year: Graafstroom
+months <- as.data.frame(avg_NDVI[,16:27])
+avg_NDVI <- transform(avg_NDVI, Average_Year = rowMeans(months, na.rm = TRUE))
+greenest_city_Year <- avg_NDVI$NAME_2[which.max(avg_NDVI$Average_Year)]
